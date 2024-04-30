@@ -28,9 +28,10 @@ void A4988::dump_config() {
 void A4988::loop() {
   bool at_target = this->has_reached_target();
   if (this->sleep_pin_ != nullptr) {
+    bool is_zero = this->is_current_pos_zero();
     bool sleep_rising_edge = !sleep_pin_state_ & !at_target;
-    this->sleep_pin_->digital_write(!at_target);
-    this->sleep_pin_state_ = !at_target;
+    this->sleep_pin_->digital_write(!at_target && !is_zero);
+    this->sleep_pin_state_ = !at_target && !is_zero;
     if (sleep_rising_edge) {
       delayMicroseconds(1000);
     }
